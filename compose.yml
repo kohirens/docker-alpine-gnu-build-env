@@ -1,0 +1,13 @@
+services:
+    container:
+        image: "kohirens/alpine-gnu-build-env:dev"
+        build:
+            args:
+                ALPINE_VER: "${ALPINE_VER}"
+                GLIBC_VER: "${GLIBC_VER}"
+            dockerfile: "Dockerfile"
+            context: "."
+            target: "release"
+        tty: true
+        volumes:
+            - "./:/tmp/app"

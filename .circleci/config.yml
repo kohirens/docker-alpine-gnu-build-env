@@ -153,3 +153,5 @@ workflows:
           requires: [ fetch-code ]
           tags: "<<pipeline.git.tag>> latest"
           repository: <<pipeline.parameters.dh_img_repo>>
+          do_checkout: false
+          do_attach_workspace: true

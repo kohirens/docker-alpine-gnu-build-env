@@ -40,7 +40,7 @@ parameters:
     default: variables.env
     type: string
   dh_img_repo:
-    default: "Kohirens/docker-alpine-gnu-build-env"
+    default: "kohirens/docker-alpine-gnu-build-env"
     type: string
 
 executors:
@@ -53,10 +53,17 @@ executors:
     resource_class: small
     environment:
       *default-env-vars
+  go-get-latest:
+    docker: # see https://github.com/kohirens/go-get-latest
+      - image: kohirens/go-get-latest:0.6.0
+        auth:
+          username: ${DH_USER}
+          password: ${DH_PASS}
+    resource_class: small
 
 jobs:
   fetch-code:
-    executor: base
+    executor: go-get-latest
     parameters:
       img_tag:
         default: "latest"
@@ -130,8 +137,10 @@ workflows:
           filters:
             <<: *filter-semantic-tag
           img_tag: <<pipeline.git.tag>>
-      - vr/publish-image:
+      - vr/publish-docker-hub:
           context: <<pipeline.parameters.ctx_docker_hub>>
           filters:
             <<: *filter-semantic-tag
           requires: [ fetch-code ]
+          tags: "<<pipeline.git.tag>> latest"
+          repository: <<pipeline.parameters.dh_img_repo>>

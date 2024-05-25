@@ -21,11 +21,11 @@ orbs:
 
 parameters:
   ctx_auto_release:
-    default: "Kohirens-automation"
+    default: "kohirens-automation"
     description: Secrets context
     type: string
   ctx_docker_hub:
-    default: "Kohirens-automation-dockerhub"
+    default: "kohirens-automation-dockerhub"
     description: Secrets context
     type: string
   ssh_finger:

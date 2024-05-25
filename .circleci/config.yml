@@ -142,7 +142,11 @@ workflows:
           img_tag: <<pipeline.git.tag>>
       - vr/publish-docker-hub:
           pre-steps:
-            - run: export $(< <<pipeline.parameters.variables_file>>)
+            - run:
+                command: |
+                  export $(< <<pipeline.parameters.variables_file>>)
+                  echo "ALPINE_VER=${ALPINE_VER}" >> $BASH_ENV
+                  echo "GLIBC_VER=${GLIBC_VER}" >> $BASH_ENV
           context: <<pipeline.parameters.ctx_docker_hub>>
           filters:
             <<: *filter-semantic-tag

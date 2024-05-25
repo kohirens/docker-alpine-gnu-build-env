@@ -3,6 +3,7 @@ version: 2.1
 # Anchors
 default-env-vars: &default-env-vars
   ALPINE_VER: "3.19"
+  GLIBC_VER: "2.39"
   DOCKER_BUILDKIT: 1
 
 filter-semantic-tag: &filter-semantic-tag
@@ -74,7 +75,9 @@ jobs:
           name: "Build custom environment variables file"
           command: |
             ALPINE_VER=$(go-get-latest --no-patch alpine2)
+            GLIBC_VER=$(go-get-latest --no-patch glibc)
             echo "ALPINE_VER=${ALPINE_VER}" > <<pipeline.parameters.variables_file>>
+            echo "GLIBC_VER=${GLIBC_VER}" > <<pipeline.parameters.variables_file>>
             echo "DH_IMG=<<pipeline.parameters.dh_img_repo>>:<<parameters.img_tag>>" >> <<pipeline.parameters.variables_file>>
             cat <<pipeline.parameters.variables_file>>
       - persist_to_workspace:
@@ -138,6 +141,8 @@ workflows:
             <<: *filter-semantic-tag
           img_tag: <<pipeline.git.tag>>
       - vr/publish-docker-hub:
+          pre-steps:
+            - run: export $(< <<pipeline.parameters.variables_file>>)
           context: <<pipeline.parameters.ctx_docker_hub>>
           filters:
             <<: *filter-semantic-tag

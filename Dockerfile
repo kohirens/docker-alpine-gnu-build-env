@@ -41,13 +41,16 @@ COPY --chmod=0777 gnu-install.sh .
 
 ENTRYPOINT [ "start.sh" ]
 
+RUN apk --no-progress --purge --no-cache add --upgrade --virtual .build.deps \
+    g++
+
+RUN apk --no-progress --purge --no-cache add --upgrade --virtual .build.deps.libc \
+    libc-dev
+
 # install m4 from source
 FROM base AS m4
 
-RUN apk --no-progress --purge --no-cache add --upgrade --virtual .build.deps \
-    g++ \
-    musl-dev \
- && ./gnu-install.sh "m4" "1.4.19" "xz" "sig" "1"
+RUN ./gnu-install.sh "m4" "1.4.19" "xz" "sig" "1"
 
 # install bison from source
 FROM m4 AS bison

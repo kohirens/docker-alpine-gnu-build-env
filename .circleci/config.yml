@@ -18,7 +18,7 @@ remote_worker: &remote_worker
     docker_layer_caching: true
 
 orbs:
-  vr: kohirens/version-release@4.0.3
+  vr: kohirens/version-release@4.0.4
 
 parameters:
   ctx_auto_release:
@@ -141,12 +141,6 @@ workflows:
             <<: *filter-semantic-tag
           img_tag: <<pipeline.git.tag>>
       - vr/publish-docker-hub:
-          pre-steps:
-            - run:
-                command: |
-                  export $(< <<pipeline.parameters.variables_file>>)
-                  echo "ALPINE_VER=${ALPINE_VER}" >> $BASH_ENV
-                  echo "GLIBC_VER=${GLIBC_VER}" >> $BASH_ENV
           context: <<pipeline.parameters.ctx_docker_hub>>
           filters:
             <<: *filter-semantic-tag
@@ -155,3 +149,5 @@ workflows:
           repository: <<pipeline.parameters.dh_img_repo>>
           do_checkout: false
           do_attach_workspace: true
+          env_file: <<pipeline.parameters.variables_file>>
+          build_args: "--build-arg ALPINE_VER --build-arg GLIBC_VER"

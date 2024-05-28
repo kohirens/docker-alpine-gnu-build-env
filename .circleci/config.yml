@@ -56,7 +56,7 @@ executors:
       *default-env-vars
   go-get-latest:
     docker: # see https://github.com/kohirens/go-get-latest
-      - image: kohirens/go-get-latest:0.6.0
+      - image: kohirens/go-get-latest:0.7.1
         auth:
           username: ${DH_USER}
           password: ${DH_PASS}

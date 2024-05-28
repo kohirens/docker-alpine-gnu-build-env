@@ -46,8 +46,8 @@ parameters:
 
 executors:
   image-builder:
-    docker: # see https://circleci.com/docs/building-docker-images/#docker-version
-      - image: docker:docker24
+    docker: # see https://circleci.com/developer/images/image/cimg/base
+      - image: cimg/base:current
         auth:
           username: ${DH_USER}
           password: ${DH_PASS}

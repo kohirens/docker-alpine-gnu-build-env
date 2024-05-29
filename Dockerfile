@@ -129,4 +129,10 @@ RUN wget https://ftp.gnu.org/pub/gnu/gettext/gettext-${GETTEXT_VER}.tar.xz \
  && make install
 
 # TODO: Get GCC from kohirens/docker-build-alpine-gcc when available.
-FROM gettext AS release
+FROM gettext AS cleanup
+
+RUN rm -rf /tmp/*
+
+FROM scratch as release
+
+COPY --from=cleanup / /

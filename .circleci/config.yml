@@ -89,7 +89,7 @@ jobs:
     environment:
       <<: *default-env-vars
     steps:
-      - checkout
+      - attach_workspace: { at: .}
       - *remote_worker
       - run:
           name: "Build and test Docker image"
@@ -102,9 +102,12 @@ jobs:
 workflows:
   quality-control: # Run on all branches and PRs except main|auto-*
     jobs:
+      - fetch-code:
+          context: <<pipeline.parameters.ctx_docker_hub>>
       - build-n-test:
           context: <<pipeline.parameters.ctx_auto_release>>
           filters: { branches: { ignore: /main|auto-update-changelog/ } }
+          requires: [ fetch-code ]
 
   workflow-selector:
     when:

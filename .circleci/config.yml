@@ -2,8 +2,6 @@ version: 2.1
 
 # Anchors
 default-env-vars: &default-env-vars
-  ALPINE_VER: "3.19"
-  GLIBC_VER: "2.39"
   DOCKER_BUILDKIT: 1
 
 filter-semantic-tag: &filter-semantic-tag
@@ -41,7 +39,7 @@ parameters:
     default: variables.env
     type: string
   dh_img_repo:
-    default: "kohirens/docker-alpine-gnu-build-env"
+    default: "kohirens/alpine-gnu-build-env"
     type: string
 
 executors:
@@ -67,7 +65,7 @@ jobs:
     executor: go-get-latest
     parameters:
       img_tag:
-        default: "latest"
+        default: "dev"
         type: string
     steps:
       - checkout
@@ -75,9 +73,10 @@ jobs:
           name: "Build custom environment variables file"
           command: |
             ALPINE_VER=$(go-get-latest --no-patch alpine2)
+            ALPINE_VER="3.19"
             GLIBC_VER=$(go-get-latest --no-patch glibc)
             echo "ALPINE_VER=${ALPINE_VER}" > <<pipeline.parameters.variables_file>>
-            echo "GLIBC_VER=${GLIBC_VER}" > <<pipeline.parameters.variables_file>>
+            echo "GLIBC_VER=${GLIBC_VER}" >> <<pipeline.parameters.variables_file>>
             echo "DH_IMG=<<pipeline.parameters.dh_img_repo>>:<<parameters.img_tag>>" >> <<pipeline.parameters.variables_file>>
             cat <<pipeline.parameters.variables_file>>
       - persist_to_workspace:
@@ -94,8 +93,8 @@ jobs:
       - run:
           name: "Build and test Docker image"
           command: |
-            export $(< <<pipeline.parameters.variables_file>>)
-            docker build --rm --no-cache -t "${DH_IMG}" --build-arg ALPINE_VER --target "release" .
+            export $(cat <<pipeline.parameters.variables_file>>)
+            docker build --rm --no-cache -t "${DH_IMG}" --build-arg ALPINE_VER --build-arg GLIBC_VER --target "release" .
             echo "test running the docker image built"
             docker run -it --rm --entrypoint bash "${DH_IMG}" ls -la .
 

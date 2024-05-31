@@ -95,7 +95,7 @@ jobs:
           name: "Build and test Docker image"
           command: |
             export $(cat <<pipeline.parameters.variables_file>>)
-            docker build --rm -t "${DH_IMG}" --build-arg ALPINE_VER --target "release" .
+            docker build --rm -t "${DH_IMG}" --build-arg ALPINE_VER --target "test" .
             echo "test running the docker image built"
             docker run -it --entrypoint sh --rm "${DH_IMG}" /tmp/src/test.sh
 

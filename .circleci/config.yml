@@ -41,6 +41,9 @@ parameters:
   dh_img_repo:
     default: "kohirens/alpine-gnu-build-env"
     type: string
+  dh_img_tag_file:
+    default: "dh-image-tag.txt"
+    type: string
 
 executors:
   image-builder:
@@ -72,11 +75,9 @@ jobs:
       - run:
           name: "Build custom environment variables file"
           command: |
-            ALPINE_VER=$(go-get-latest --no-patch alpine2)
-            ALPINE_VER="3.19"
-            GLIBC_VER=$(go-get-latest --no-patch glibc)
+            ALPINE_VER=$(go-get-latest alpine)
             echo "ALPINE_VER=${ALPINE_VER}" > <<pipeline.parameters.variables_file>>
-            echo "GLIBC_VER=${GLIBC_VER}" >> <<pipeline.parameters.variables_file>>
+            echo "${ALPINE_VER}" > <<pipeline.parameters.dh_img_tag_file>>
             echo "DH_IMG=<<pipeline.parameters.dh_img_repo>>:<<parameters.img_tag>>" >> <<pipeline.parameters.variables_file>>
             cat <<pipeline.parameters.variables_file>>
       - persist_to_workspace:
@@ -94,7 +95,7 @@ jobs:
           name: "Build and test Docker image"
           command: |
             export $(cat <<pipeline.parameters.variables_file>>)
-            docker build --rm -t "${DH_IMG}" --build-arg ALPINE_VER --build-arg GLIBC_VER --target "release" .
+            docker build --rm -t "${DH_IMG}" --build-arg ALPINE_VER --target "release" .
             echo "test running the docker image built"
             docker run -it --entrypoint sh --rm "${DH_IMG}" test.sh
 
@@ -134,6 +135,7 @@ workflows:
     jobs:
       - vr/tag-and-release: # release the code as its own semver
           context: <<pipeline.parameters.ctx_auto_release>>
+          tag_file: <<pipeline.parameters.dh_img_tag_file>>
 
   on-tag-release:
     jobs:
@@ -152,4 +154,4 @@ workflows:
           do_checkout: false
           do_attach_workspace: true
           env_file: <<pipeline.parameters.variables_file>>
-          build_args: "--build-arg ALPINE_VER --build-arg GLIBC_VER"
+          build_args: "--build-arg ALPINE_VER"

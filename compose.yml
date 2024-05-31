@@ -5,7 +5,6 @@ services:
         build:
             args:
                 ALPINE_VER: "${ALPINE_VER}"
-                GLIBC_VER: "${GLIBC_VER}"
             dockerfile: "Dockerfile"
             context: "."
             target: "release"

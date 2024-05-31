@@ -104,9 +104,9 @@ workflows:
     jobs:
       - fetch-code:
           context: <<pipeline.parameters.ctx_docker_hub>>
+          filters: { branches: { ignore: /main|auto-update-changelog/ } }
       - build-n-test:
           context: <<pipeline.parameters.ctx_auto_release>>
-          filters: { branches: { ignore: /main|auto-update-changelog/ } }
           requires: [ fetch-code ]
 
   workflow-selector:

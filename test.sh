@@ -2,6 +2,6 @@
 
 set -e
 
-gcc /tmp/test.cpp
+gcc /tmp/src/test.cpp
 
 ./a.out

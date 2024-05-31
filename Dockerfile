@@ -30,14 +30,14 @@ RUN apk --no-progress --purge --no-cache upgrade \
  && rm -vrf /var/cache/apk/* \
  && sed -i -e 's|root:x:0:0:root:/root:/bin/ash|root:x:0:0:root:/root:/bin/bash|g' /etc/passwd
 
-ENTRYPOINT [ "start.sh" ]
-
 # TODO: Get GCC from kohirens/docker-build-alpine-gcc when available.
 RUN apk --no-progress --purge --no-cache add --upgrade --virtual .build.deps.gpp \
     g++
 
 RUN apk --no-progress --purge --no-cache add --upgrade --virtual .build.deps.libc \
     libc-dev
+
+ENTRYPOINT [ "start.sh" ]
 
 COPY --chmod=+x start.sh /usr/local/bin
 COPY --chmod=0777 gnu-*.sh .
@@ -78,7 +78,12 @@ FROM gettext AS cleanup
 
 RUN rm -rf /tmp/*
 
-FROM scratch as release
+FROM gettext AS test
+
+COPY --chmod=0777 test.cpp .
+COPY --chmod=0777 test.sh .
+
+FROM scratch AS release
 
 COPY --from=cleanup / /
 

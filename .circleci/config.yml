@@ -97,7 +97,7 @@ jobs:
             export $(cat <<pipeline.parameters.variables_file>>)
             docker build --rm -t "${DH_IMG}" --build-arg ALPINE_VER --target "release" .
             echo "test running the docker image built"
-            docker run -it --entrypoint sh --rm "${DH_IMG}" test.sh
+            docker run -it --entrypoint sh --rm "${DH_IMG}" /tmp/src/test.sh
 
 workflows:
   quality-control: # Run on all branches and PRs except main|auto-*

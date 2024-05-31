@@ -17,7 +17,7 @@ etc. It's a real Oroborus, kinda deal, but GNU is kinda wierd like that.
 
 ## Status
 
-[![CircleCI](https://dl.circleci.com/status-badge/img/gh/kohirens/docker-alpine-gnu-build-env/tree/main.svg?style=shield&&circle-token=)](https://dl.circleci.com/status-badge/redirect/gh/kohirens/docker-alpine-gnu-build-env/tree/main)
+[![CircleCI](https://dl.circleci.com/status-badge/img/gh/kohirens/docker-alpine-gnu-build-env/tree/main.svg?style=svg&circle-token=CCIPRJ_WVf9PiBPzDgTLfFapwTVLo_838a1d8f22302e05c2158026645f456ccc2d81ae)](https://dl.circleci.com/status-badge/redirect/gh/kohirens/docker-alpine-gnu-build-env/tree/main)
 
 ## Usage
 
@@ -37,7 +37,12 @@ RUN ...
 
 For Docker image tags see [kohirens/docker-alpine-gnu-build-env]
 
+## Resources
+
+* [Binutils Porting Guide To A New Target/Processor Architecture]
+
 ---
 
 [kohirens/docker-alpine-gnu-build-env]: https://hub.docker.com/repository/docker/kohirens/docker-alpine-gnu-build-env
 [Kohirens Alpine GNU Lib C]:
+[Binutils Porting Guide To A New Target/Processor Architecture]: https://sourceware.org/binutils/binutils-porting-guide.txt

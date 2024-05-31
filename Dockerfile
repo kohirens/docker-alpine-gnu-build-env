@@ -1,15 +1,9 @@
 ARG ALPINE_VER
-ARG GLIBC_VER
 
 # Setup a build environment on Alpine that allows you to build the latest
 # version of GNU software to-date.
 # For details see https://www.gnu.org/software/software.html
-FROM kohirens/alpine-glibc-build:${ALPINE_VER}-${GLIBC_VER} AS base
-
-ARG ALPINE_VER
-ARG GLIBC_VER
-
-ENV LD_LIBRARY_PATH=""
+FROM alpine:${ALPINE_VER} AS base
 
 WORKDIR /tmp/src
 

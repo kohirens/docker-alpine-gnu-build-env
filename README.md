@@ -40,9 +40,11 @@ For Docker image tags see [kohirens/docker-alpine-gnu-build-env]
 ## Resources
 
 * [Binutils Porting Guide To A New Target/Processor Architecture]
+* [How do I parse command line arguments in Bash]
 
 ---
 
 [kohirens/docker-alpine-gnu-build-env]: https://hub.docker.com/repository/docker/kohirens/docker-alpine-gnu-build-env
 [Kohirens Alpine GNU Lib C]:
 [Binutils Porting Guide To A New Target/Processor Architecture]: https://sourceware.org/binutils/binutils-porting-guide.txt
+[How do I parse command line arguments in Bash]: https://stackoverflow.com/questions/192249/how-do-i-parse-command-line-arguments-in-bash

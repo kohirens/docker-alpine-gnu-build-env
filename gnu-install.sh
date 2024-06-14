@@ -2,6 +2,8 @@
 
 set -e
 
+# For details see:
+# https://stackoverflow.com/questions/192249/how-do-i-parse-command-line-arguments-in-bash
 getopt --test > /dev/null && true
 if [ $? -ne 4 ]; then
     echo 'sorry, getopts --test` failed in this environment'

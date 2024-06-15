@@ -16,7 +16,7 @@ remote_worker: &remote_worker
     docker_layer_caching: true
 
 orbs:
-  vr: kohirens/version-release@4.0.5
+  vr: kohirens/version-release@4.1.0
 
 parameters:
   ctx_auto_release:
@@ -44,6 +44,9 @@ parameters:
   dh_img_tag_file:
     default: "dh-image-tag.txt"
     type: string
+  semver_file:
+    default: "semver.txt"
+    type: string
 
 executors:
   image-builder:
@@ -66,10 +69,6 @@ executors:
 jobs:
   fetch-code:
     executor: go-get-latest
-    parameters:
-      img_tag:
-        default: "dev"
-        type: string
     steps:
       - checkout
       - run:
@@ -77,8 +76,8 @@ jobs:
           command: |
             ALPINE_VER=$(go-get-latest alpine)
             echo "ALPINE_VER=${ALPINE_VER}" > <<pipeline.parameters.variables_file>>
-            echo "${ALPINE_VER}" > <<pipeline.parameters.dh_img_tag_file>>
-            echo "DH_IMG=<<pipeline.parameters.dh_img_repo>>:<<parameters.img_tag>>" >> <<pipeline.parameters.variables_file>>
+            echo "${ALPINE_VER}" > <<pipeline.parameters.semver_file>>
+            echo "${ALPINE_VER} latest" > <<pipeline.parameters.dh_img_tag_file>>
             cat <<pipeline.parameters.variables_file>>
       - persist_to_workspace:
           root: .
@@ -95,9 +94,11 @@ jobs:
           name: "Build and test Docker image"
           command: |
             export $(cat <<pipeline.parameters.variables_file>>)
+            DH_IMG="<<pipeline.parameters.dh_img_repo>>:dev"
             docker build --rm -t "${DH_IMG}" --build-arg ALPINE_VER --target "test" .
             echo "test running the docker image built"
             docker run -it --entrypoint sh --rm "${DH_IMG}" /tmp/src/test.sh
+            docker rmi "${DH_IMG}"
 
 workflows:
   quality-control: # Run on all branches and PRs except main|auto-*
@@ -115,18 +116,30 @@ workflows:
         - equal: ["workflow-selector", <<pipeline.parameters.triggered_flow>>]
         - equal: [ main, <<pipeline.git.branch>> ]
     jobs:
+      - fetch-code:
+          context: <<pipeline.parameters.ctx_docker_hub>>
       - vr/workflow-selector:
           context: <<pipeline.parameters.ctx_auto_release>>
           ssh_finger: <<pipeline.parameters.ssh_finger>>
+          tag_file: <<pipeline.parameters.semver_file>>
+          requires: [ fetch-code ]
+          do_checkout: false
+          do_attach_workspace: true
 
   publish-changelog:
     when:
       and:
         - equal: ["publish-changelog", <<pipeline.parameters.triggered_flow>>]
     jobs:
+      - fetch-code:
+          context: <<pipeline.parameters.ctx_docker_hub>>
       - vr/publish-changelog:
           context: <<pipeline.parameters.ctx_auto_release>>
           ssh_finger: <<pipeline.parameters.ssh_finger>>
+          tag_file: <<pipeline.parameters.semver_file>>
+          requires: [ fetch-code ]
+          do_checkout: false
+          do_attach_workspace: true
 
   publish-release-tag:
     when:
@@ -135,10 +148,9 @@ workflows:
     jobs:
       - fetch-code:
           context: <<pipeline.parameters.ctx_docker_hub>>
-          img_tag: <<pipeline.git.tag>>
       - vr/tag-and-release: # release the code as its own semver
           context: <<pipeline.parameters.ctx_auto_release>>
-          tag_file: <<pipeline.parameters.dh_img_tag_file>>
+          tag_file: <<pipeline.parameters.semver_file>>
           requires: [ fetch-code ]
           do_checkout: false
           do_attach_workspace: true
@@ -149,13 +161,12 @@ workflows:
           context: <<pipeline.parameters.ctx_docker_hub>>
           filters:
             <<: *filter-semantic-tag
-          img_tag: <<pipeline.git.tag>>
       - vr/publish-docker-hub:
           context: <<pipeline.parameters.ctx_docker_hub>>
           filters:
             <<: *filter-semantic-tag
           requires: [ fetch-code ]
-          tags: "<<pipeline.git.tag>> latest"
+          tag_file: <<pipeline.parameters.dh_img_tag_file>>
           repository: <<pipeline.parameters.dh_img_repo>>
           do_checkout: false
           do_attach_workspace: true

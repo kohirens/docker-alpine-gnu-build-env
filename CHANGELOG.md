@@ -5,40 +5,6 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [3.20.0] - 2024-06-15
-
-### Changed
-
-- Automation Changes
-- Tagging To Match Alpine Semver
-- GNU Install Script
-- Optimize Build
-- CI Configuration
-- Separate Out Build Deps
-
-### Fixed
-
-- Setting Environment Variable On Image Publish
-- Auto Release Fails WIth GitHub Unknown Host
-- Fix Environment Variables
-- CI Build
-
-### Miscellaneous Tasks
-
-- Support Setting Semantic Version Manually
-- Upgraded Version Release
-- Control Quality Checks
-- Updated REAMDE
-- Reduce Release Image
-- CI Configuration Clean Up
-- Upgrade CI Image
-
-### Testing
-
-- Fixed CI Running Test
-- Fix Compilation Testing
-- Compiler Build
-
 ## [0.1.2] - 2024-05-25
 
 ### Fixed

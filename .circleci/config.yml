@@ -176,3 +176,25 @@ workflows:
           do_attach_workspace: true
           env_file: <<pipeline.parameters.variables_file>>
           build_args: "--build-arg ALPINE_VER"
+
+
+  scheduled-weekly-check:
+    when:
+      and:
+        - equal: ["scheduled-weekly-check", << pipeline.parameters.triggered_flow >>]
+        - equal: [ main, << pipeline.git.branch >> ]
+    jobs:
+      - fetch-code:
+          context: <<pipeline.parameters.ctx_docker_hub>>
+      - build-n-test:
+          context: <<pipeline.parameters.ctx_auto_release>>
+          requires: [ fetch-code ]
+      - vr/publish-docker-hub:
+          context: <<pipeline.parameters.ctx_docker_hub>>
+          requires: [ build-n-test ]
+          tag_file: <<pipeline.parameters.dh_img_tag_file>>
+          repository: <<pipeline.parameters.dh_img_repo>>
+          do_checkout: false
+          do_attach_workspace: true
+          env_file: <<pipeline.parameters.variables_file>>
+          build_args: "--build-arg ALPINE_VER"

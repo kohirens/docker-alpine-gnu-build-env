@@ -39,8 +39,8 @@ RUN apk --no-progress --purge --no-cache add --upgrade --virtual .build.deps.lib
 
 ENTRYPOINT [ "start.sh" ]
 
-COPY --chmod=+x start.sh /usr/local/bin
-COPY --chmod=0777 gnu-*.sh .
+COPY --chmod=755 start.sh /usr/local/bin
+COPY --chmod=755 gnu-*.sh .
 
 # install m4 from source
 FROM base AS m4
@@ -80,8 +80,8 @@ RUN rm -rf /tmp/*
 
 FROM cleanup AS test
 
-COPY --chmod=0777 test.cpp .
-COPY --chmod=0777 test.sh .
+COPY --chmod=0644 test.cpp .
+COPY --chmod=0655 test.sh .
 
 FROM scratch AS release
 

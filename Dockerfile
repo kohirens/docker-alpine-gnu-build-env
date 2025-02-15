@@ -78,7 +78,7 @@ FROM gettext AS cleanup
 
 RUN rm -rf /tmp/*
 
-FROM gettext AS test
+FROM cleanup AS test
 
 COPY --chmod=0777 test.cpp .
 COPY --chmod=0777 test.sh .

@@ -65,7 +65,7 @@ wget https://ftp.gnu.org/gnu/${app_name}/${app_name}-${soft_ver}.tar.${tar_type}
 
 # check file against signature
 if [ "${skip_sig_verify}" != "1" ]; then
-    gpg --verify ${app_name}-${soft_ver}.tar.${tar_type}.${sig_type} ${app_name}-${soft_ver}.tar.${tar_type}
+    gpgv --keyring ./gnu-keyring.gpg ${app_name}-${soft_ver}.tar.${tar_type}.${sig_type} ${app_name}-${soft_ver}.tar.${tar_type}
 fi
 
 # extract the source

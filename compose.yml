@@ -7,7 +7,6 @@ services:
                 ALPINE_VER: "${ALPINE_VER}"
             dockerfile: "Dockerfile"
             context: "."
-            target: "release"
         tty: true
         volumes:
             - "./:/tmp/app"

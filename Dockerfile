@@ -1,4 +1,10 @@
-ARG ALPINE_VER
+ARG  ALPINE_VER=3.24
+ARG      M4_VER=1.4.20
+ARG   BISON_VER=3.8.2
+ARG     GMP_VER=6.3.0
+ARG    MPFR_VER=4.2.2
+ARG     MPC_VER=1.4.1
+ARG GETTEXT_VER=1.0
 
 # Setup a build environment on Alpine that allows you to build the latest
 # version of GNU software to-date.
@@ -28,7 +34,8 @@ RUN apk --no-progress --purge --no-cache upgrade \
     texinfo \
  && apk --no-progress --purge --no-cache upgrade \
  && rm -vrf /var/cache/apk/* \
- && sed -i -e 's|root:x:0:0:root:/root:/bin/ash|root:x:0:0:root:/root:/bin/bash|g' /etc/passwd
+ && sed -i -e 's|root:x:0:0:root:/root:/bin/ash|root:x:0:0:root:/root:/bin/bash|g' /etc/passwd \
+ && wget https://ftp.gnu.org/gnu/gnu-keyring.gpg
 
 # TODO: Get GCC from kohirens/docker-build-alpine-gcc when available.
 RUN apk --no-progress --purge --no-cache add --upgrade --virtual .build.deps.gpp \
@@ -42,39 +49,38 @@ ENTRYPOINT [ "start.sh" ]
 COPY --chmod=755 start.sh /usr/local/bin
 COPY --chmod=755 gnu-*.sh .
 
-# install m4 from source
-FROM base AS m4
+FROM base AS build
 
-RUN ./gnu-install.sh -t "xz" -s "m4" "1.4.19"
+ARG M4_VER
 
-# install bison from source
-FROM m4 AS bison
+RUN echo "$(nproc)" > number-of-procs.txt \
+ && printf "number of processes allowed %s" "$(cat number-of-procs.txt)"
 
-RUN ./gnu-install.sh -t "xz" -s "bison" "3.8.2"
+RUN ./gnu-install.sh -j "$(nproc)" -t "xz" "m4" "${M4_VER}"
 
-# install gmp from source
-FROM bison AS gmp
+ARG BISON_VER
 
-RUN gpg --recv-keys 0x28C67298 \
- && ./gnu-install.sh -t "xz" "gmp" "6.3.0"
+RUN ./gnu-install.sh -j "$(nproc)" -t "xz" "bison" "${BISON_VER}"
 
-# install mpfr from source
-FROM gmp AS mpfr
+ARG GMP_VER
 
-RUN ./gnu-install.sh -t "xz" -s "mpfr" "4.2.1"
+RUN export CFLAGS="-O2 -std=gnu17" \
+ && ./gnu-install.sh -j "$(nproc)" -t "xz" "gmp" "${GMP_VER}"
 
-# install mpc from source
-FROM mpfr AS mpc
+ARG MPFR_VER
 
-RUN ./gnu-install.sh -s "mpc" "1.3.1"
+RUN ./gnu-install.sh -j "$(nproc)" -t "xz" "mpfr" "${MPFR_VER}"
 
-# install gettext from source
-FROM mpc AS gettext
+ARG MPC_VER
 
-RUN ./gnu-install.sh -t "xz" -s "gettext" "0.22.5"
+RUN ./gnu-install.sh -j "$(nproc)" -t "xz" "mpc" "${MPC_VER}"
+
+ARG GETTEXT_VER
+
+RUN ./gnu-install.sh -j "$(nproc)" -t "xz" -s "gettext" "${GETTEXT_VER}"
 
 # Let us reduce bloat
-FROM gettext AS cleanup
+FROM build AS cleanup
 
 RUN rm -rf /tmp/*
 

@@ -27,10 +27,6 @@ parameters:
     default: "kohirens-automation-dockerhub"
     description: Secrets context
     type: string
-  ssh_finger:
-    description: SSH fingerprint.
-    type: string
-    default: "SHA256:enLUAqcNKueqz8aTjmt5saqVB2GIDAybUF9z9zIT0h0"
   triggered_flow:
     default: "workflow-selector"
     description: Workflow to be executed
@@ -121,7 +117,6 @@ workflows:
           context: <<pipeline.parameters.ctx_docker_hub>>
       - vr/workflow-selector:
           context: <<pipeline.parameters.ctx_auto_release>>
-          ssh_finger: <<pipeline.parameters.ssh_finger>>
           tag_file: <<pipeline.parameters.semver_file>>
           requires: [ fetch-code ]
           do_checkout: false
@@ -136,7 +131,6 @@ workflows:
           context: <<pipeline.parameters.ctx_docker_hub>>
       - vr/publish-changelog:
           context: <<pipeline.parameters.ctx_auto_release>>
-          ssh_finger: <<pipeline.parameters.ssh_finger>>
           tag_file: <<pipeline.parameters.semver_file>>
           requires: [ fetch-code ]
           do_checkout: false

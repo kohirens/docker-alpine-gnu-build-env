@@ -16,7 +16,7 @@ remote_worker: &remote_worker
     docker_layer_caching: true
 
 orbs:
-  vr: kohirens/version-release@4.4.4
+  vr: kohirens/version-release@5.1.10
 
 parameters:
   ctx_auto_release:
@@ -54,7 +54,7 @@ executors:
       - image: cimg/base:current
         auth:
           username: ${DH_USER}
-          password: ${DH_PASS}
+          password: ${DH_API_TOKEN}
     resource_class: small
     environment:
       *default-env-vars
@@ -63,7 +63,7 @@ executors:
       - image: kohirens/go-get-latest:0.7.2
         auth:
           username: ${DH_USER}
-          password: ${DH_PASS}
+          password: ${DH_API_TOKEN}
     resource_class: small
 
 jobs:
@@ -89,7 +89,7 @@ jobs:
     environment:
       <<: *default-env-vars
     steps:
-      - attach_workspace: { at: .}
+      - attach_workspace: { at: . }
       - *remote_worker
       - run:
           name: "Build and test Docker image"
@@ -176,7 +176,6 @@ workflows:
           do_attach_workspace: true
           env_file: <<pipeline.parameters.variables_file>>
           build_args: "--build-arg ALPINE_VER"
-
 
   scheduled-weekly-check:
     when:

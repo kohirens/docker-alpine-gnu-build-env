@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [3.24.4]
 
+### Fixed
+
+- Auto Version Release
+
+## [3.24.4]
+
 ### Changed
 
 - Upgrade Environment Dependencies

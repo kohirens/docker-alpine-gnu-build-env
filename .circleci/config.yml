@@ -16,7 +16,7 @@ remote_worker: &remote_worker
     docker_layer_caching: true
 
 orbs:
-  vr: kohirens/version-release@5.1.10
+  vr: kohirens/version-release@6.0.0
 
 parameters:
   ctx_auto_release:
@@ -164,12 +164,11 @@ workflows:
           filters:
             <<: *filter-semantic-tag
           requires: [ fetch-code ]
-          tag_file: <<pipeline.parameters.dh_img_tag_file>>
+          semver_tag_file: <<pipeline.parameters.dh_img_tag_file>>
           repository: <<pipeline.parameters.dh_img_repo>>
           do_checkout: false
           do_attach_workspace: true
           env_file: <<pipeline.parameters.variables_file>>
-          build_args: "--build-arg ALPINE_VER=${ALPINE_VER}"
 
   scheduled-weekly-check:
     when:
@@ -185,9 +184,8 @@ workflows:
       - vr/publish-docker-hub:
           context: <<pipeline.parameters.ctx_docker_hub>>
           requires: [ build-n-test ]
-          tag_file: <<pipeline.parameters.dh_img_tag_file>>
+          semver_tag_file: <<pipeline.parameters.dh_img_tag_file>>
           repository: <<pipeline.parameters.dh_img_repo>>
           do_checkout: false
           do_attach_workspace: true
           env_file: <<pipeline.parameters.variables_file>>
-          build_args: "--build-arg ALPINE_VER=${ALPINE_VER}"

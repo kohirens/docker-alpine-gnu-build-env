@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Regular Maintenance
 
+- Fix Post Tag Publish
 - Clean Up SSH References in CircleCI Config
 - Update CircleCI Config
 

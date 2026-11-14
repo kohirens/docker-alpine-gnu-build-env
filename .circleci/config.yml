@@ -37,9 +37,6 @@ parameters:
   dh_img_repo:
     default: "kohirens/alpine-gnu-build-env"
     type: string
-  dh_img_tag_file:
-    default: "dh-image-tag.txt"
-    type: string
   semver_file:
     default: "semver.txt"
     type: string
@@ -73,7 +70,6 @@ jobs:
             ALPINE_VER=$(go-get-latest alpine)
             echo "export ALPINE_VER='${ALPINE_VER}'" > <<pipeline.parameters.variables_file>>
             echo "${ALPINE_VER}" > <<pipeline.parameters.semver_file>>
-            echo "${ALPINE_VER} latest" > <<pipeline.parameters.dh_img_tag_file>>
             chmod +x <<pipeline.parameters.variables_file>>
             cat <<pipeline.parameters.variables_file>>
       - persist_to_workspace:
@@ -164,11 +160,12 @@ workflows:
           filters:
             <<: *filter-semantic-tag
           requires: [ fetch-code ]
-          semver_tag_file: <<pipeline.parameters.dh_img_tag_file>>
+          semver_tag_file: <<pipeline.parameters.semver_file>>
           repository: <<pipeline.parameters.dh_img_repo>>
           do_checkout: false
           do_attach_workspace: true
           env_file: <<pipeline.parameters.variables_file>>
+          tags: "latest"
 
   scheduled-weekly-check:
     when:
@@ -184,8 +181,9 @@ workflows:
       - vr/publish-docker-hub:
           context: <<pipeline.parameters.ctx_docker_hub>>
           requires: [ build-n-test ]
-          semver_tag_file: <<pipeline.parameters.dh_img_tag_file>>
+          semver_tag_file: <<pipeline.parameters.semver_file>>
           repository: <<pipeline.parameters.dh_img_repo>>
           do_checkout: false
           do_attach_workspace: true
           env_file: <<pipeline.parameters.variables_file>>
+          tags: "latest"

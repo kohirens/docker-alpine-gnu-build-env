@@ -8,8 +8,8 @@ ARG GETTEXT_VER=1.0
 ARG DEJAGNU_VER=1.6.3
 ARG    BASH_VER=5.3
 ARG    GAWK_VER=5.4.1
-#ARG     TCL_VER=9.1.0
-#ARG      TK_VER=9.1.0
+ARG     TCL_VER=9.1.0
+ARG      TK_VER=9.1.0
 
 # look at https://ftp.gnu.org/gnu/ for the latest GNU versions
 
@@ -25,9 +25,11 @@ WORKDIR /tmp/src
 # make check fails with error about ctype.h which is part of musl-dev
 RUN apk --no-progress --purge --no-cache upgrade \
  && apk --no-progress --purge --no-cache add --upgrade \
+    bash \
     binutils \
     file \
     gawk \
+    gcc \
     git \
     gnupg \
     grep \
@@ -37,9 +39,6 @@ RUN apk --no-progress --purge --no-cache upgrade \
     py3-pip \
     python3 \
     texinfo \
- && apk --no-progress --purge --no-cache add --upgrade --virtual=build_deps \
-    bash \
-    gcc \
  && apk --no-progress --purge --no-cache upgrade \
  && rm -vrf /var/cache/apk/* \
  && sed -i -e 's|root:x:0:0:root:/root:/bin/ash|root:x:0:0:root:/root:/bin/bash|g' /etc/passwd \
@@ -85,39 +84,41 @@ RUN gnu-install.sh -j "$(nproc)" -t "xz" "mpc" "${MPC_VER}"
 
 ARG GETTEXT_VER
 
-RUN gnu-install.sh -j "$(nproc)" -t "xz" -s "gettext" "${GETTEXT_VER}"
+RUN gnu-install.sh -j "$(nproc)" -t "xz" "gettext" "${GETTEXT_VER}"
 
 ARG DEJAGNU_VER
 
-RUN gnu-install.sh -j "$(nproc)" -s "dejagnu" "${DEJAGNU_VER}"
+RUN gnu-install.sh -j "$(nproc)" "dejagnu" "${DEJAGNU_VER}"
 
 ARG BASH_VER
 
-RUN gnu-install.sh -j "$(nproc)" -s "bash" "${BASH_VER}"
+RUN gnu-install.sh -j "$(nproc)" "bash" "${BASH_VER}"
 
 ARG GAWK_VER
 
-RUN gnu-install.sh -j "$(nproc)" -t "xz" -s "gawk" "${GAWK_VER}"
+RUN gnu-install.sh -j "$(nproc)" -t "xz" "gawk" "${GAWK_VER}"
 
-RUN apk --no-progress --purge --no-cache del build_deps
+ARG TCL_VER
+RUN apk add zlib-dev bsd-compat-headers --virtual=build_deps
 
-#ARG TCL_VER
+RUN wget http://prdownloads.sourceforge.net/tcl/tcl${TCL_VER}-src.tar.gz \
+ && gunzip < tcl${TCL_VER}-src.tar.gz | tar xvf - \
+ && cd tcl${TCL_VER}/unix \
+ && ./configure options \
+ && make \
+ && make install
 
-#RUN wget http://prdownloads.sourceforge.net/tcl/tcl${TCL_VER}-src.tar.gz \
-# && gunzip < tcl${TCL_VER}-src.tar.gz | tar xvf - \
-# && cd tcl${TCL_VER}/unix \
-# && ./configure options \
-# && make \
-# && make install
+ARG TK_VER
+RUN apk add harfbuzz-dev libxft-dev zip --virtual=build_deps
 
-#ARG TK_VER
-#
-#RUN wget http://prdownloads.sourceforge.net/tcl/tk${TK_VER}-src.tar.gz \
-# && gunzip < tk${TCL_VER}-src.tar.gz | tar xvf - \
-# && cd tk${TCL_VER}/unix \
-# && configure options \
-# && make \
-# && make install
+RUN wget http://prdownloads.sourceforge.net/tcl/tk${TK_VER}-src.tar.gz \
+ && gunzip < tk${TCL_VER}-src.tar.gz | tar xvf - \
+ && cd tk${TCL_VER}/unix \
+ && ./configure options \
+ && make \
+ && make install
+
+RUN apk del build_deps
 
 # Let us reduce bloat
 FROM build AS cleanup

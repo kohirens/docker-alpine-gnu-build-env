@@ -39,10 +39,26 @@ Use as a base.
 ```Dockerfile
 FROM kohirens/docker-alpine-gnu-build-env:latest AS base
 
-RUN ...
+# We include a helper script in the container that should be able to build and
+# install script just about any GNU package with default settings.
+RUN gnu-install.sh -j "$(nproc)" -t "xz" "m4" "${M4_VER}"
 ```
 
 For Docker image tags see [kohirens/docker-alpine-gnu-build-env]
+
+## Build Time
+
+| Package | Version | Time   |
+|---------|---------|--------|
+| m4      | 1.4.20  | 27.9s  |
+| bison   | 3.8.2   | 20.7s  |
+| gmp     | 6.3.0   | 21.8s  |
+| mpfr    | 4.2.2   | 12.4s  |
+| mpc     | 1.4.1   | 5.2s   |
+| gettext | 1.0     | 230.3s |
+| dejagnu | 1.6.3   | 2.2s   |
+| bash    | 5.3     | 25.5s  |
+| gawk    | 5.4.1   | 14.0s  |
 
 ## Resources
 

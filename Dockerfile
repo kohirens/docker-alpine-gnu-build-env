@@ -48,9 +48,6 @@ RUN apk --no-progress --purge --no-cache upgrade \
 RUN apk --no-progress --purge --no-cache add --upgrade --virtual .build.deps.gpp \
     g++
 
-RUN apk --no-progress --purge --no-cache add --upgrade --virtual .build.deps.libc \
-    libc-dev
-
 ENTRYPOINT [ "start.sh" ]
 
 COPY --chmod=755 start.sh /usr/local/bin

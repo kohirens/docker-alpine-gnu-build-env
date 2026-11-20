@@ -9,6 +9,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Added Libtool
+
+### Changed
+
+- Docker Image Name
+
+### Regular Maintenance
+
+- Updated README Build Times
+- Clean up gnu-install Script
+- Clean up Dockerfile
+
+## [3.24.4]
+
+### Added
+
 - Add Tcl and Tk
 - GNU Bash and Awk
 - Install DejaGNU

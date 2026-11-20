@@ -60,9 +60,6 @@ FROM base AS build
 
 ARG M4_VER
 
-RUN echo "$(nproc)" > number-of-procs.txt \
- && printf "number of processes allowed %s" "$(cat number-of-procs.txt)"
-
 RUN gnu-install.sh -j "$(nproc)" -t "xz" "m4" "${M4_VER}"
 
 ARG BISON_VER

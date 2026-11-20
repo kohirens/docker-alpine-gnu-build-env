@@ -1,5 +1,7 @@
 # Docker Alpine GNU Build Environment
 
+A GNU-first build environment bootstrapped from Alpine Linux.
+
 A containerized environment for building GNU software on Alpine. Its recursive
 because each new version of this environment uses the very artifacts it builds.
 
@@ -11,8 +13,9 @@ because each new version of this environment uses the very artifacts it builds.
 
 This build environment should allow most GNU sources to compile on Alpine. It
 depends on the artifacts from the [Kohirens Alpine GNU Lib C] image, where
-the artifact are located in the directory `/usr/glibc-<version>`. This creates
-a recursive situation as that image also used this container to build itself.
+the artifact are located in the directory `/usr/local/glibc-<version>`. This
+creates a recursive situation as that image also used this container to build
+itself.
 
 You can see usage examples over at [Kohirens Alpine GNU Compiler Collection]
 and [Kohirens Alpine GNU Lib C] projects. These projects also

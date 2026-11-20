@@ -58,7 +58,10 @@ For Docker image tags see [kohirens/docker-alpine-gnu-build-env]
 | gettext | 1.0     | 230.3s |
 | dejagnu | 1.6.3   | 2.2s   |
 | bash    | 5.3     | 25.5s  |
-| gawk    | 5.4.1   | 14.0s  |
+| gawk    | 5.4.1   | 12.8s  |
+| Tcl     | 9.1.0   | 105.0s |
+| Tk      | 9.1.0   | 37.7s  |
+| libtool | 2.6.2   | 5.5s   |
 
 ## Resources
 

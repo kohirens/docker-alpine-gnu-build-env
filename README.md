@@ -37,7 +37,7 @@ and error it evolved into 4 separate containers.
 Use as a base.
 
 ```Dockerfile
-FROM kohirens/docker-alpine-gnu-build-env:latest AS base
+FROM kohirens/gnu-build-env:latest AS base
 
 # We include a helper script in the container that should be able to build and
 # install script just about any GNU package with default settings.

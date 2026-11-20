@@ -71,17 +71,19 @@ fi
 # extract the source
 tar -xaf ${app_name}-${soft_ver}.tar.${tar_type}
 
-# make a place to build
-mkdir -p /tmp/build/${app_name}-${soft_ver}
+build_dir="/tmp/build/${app_name}-${soft_ver}"
 
-cd /tmp/build/${app_name}-${soft_ver}
+# make a place to build
+mkdir -p "${build_dir}"
+
+cd "${build_dir}"
 
 # configure the build
 /tmp/src/${app_name}-${soft_ver}/configure
 
 # build the code
 if [ -n "${threads}" ]; then
-    make -j"${threads}"
+    make -j"${threads}" || cat "${build_dir}"/config.log
 else
     make --jobs
 fi

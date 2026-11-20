@@ -48,20 +48,22 @@ For Docker image tags see [kohirens/docker-alpine-gnu-build-env]
 
 ## Build Time
 
-| Package | Version | Time   |
-|---------|---------|--------|
-| m4      | 1.4.20  | 27.9s  |
-| bison   | 3.8.2   | 20.7s  |
-| gmp     | 6.3.0   | 21.8s  |
-| mpfr    | 4.2.2   | 12.4s  |
-| mpc     | 1.4.1   | 5.2s   |
-| gettext | 1.0     | 230.3s |
-| dejagnu | 1.6.3   | 2.2s   |
-| bash    | 5.3     | 25.5s  |
-| gawk    | 5.4.1   | 12.8s  |
-| Tcl     | 9.1.0   | 105.0s |
-| Tk      | 9.1.0   | 37.7s  |
-| libtool | 2.6.2   | 5.5s   |
+**Local Machine**
+
+| Package | Version | Locval Time | CircleCI |
+|---------|---------|-------------|----------|
+| m4      | 1.4.20  | 27.9s       | 43.3s    |
+| bison   | 3.8.2   | 20.7s       | 42.0s    |
+| gmp     | 6.3.0   | 21.8s       | 76.5s    |
+| mpfr    | 4.2.2   | 12.4s       | 53.4s    |
+| mpc     | 1.4.1   | 5.2s        | 14.0s    |
+| gettext | 1.0     | 230.3s      | 331.1s   |
+| dejagnu | 1.6.3   | 2.2s        | 1.6s     |
+| bash    | 5.3     | 25.5s       | 39.1s    |
+| gawk    | 5.4.1   | 12.8s       | 21.8s    |
+| Tcl     | 9.1.0   | 105.0s      | 148.8s   |
+| Tk      | 9.1.0   | 37.7s       | 51.9s    |
+| libtool | 2.6.2   | 5.5s        | 5.8s     |
 
 ## Resources
 

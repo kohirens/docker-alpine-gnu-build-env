@@ -115,17 +115,20 @@ RUN wget http://prdownloads.sourceforge.net/tcl/tk${TK_VER}-src.tar.gz \
  && make \
  && make install
 
-RUN apk del build_deps
+RUN gnu-install.sh -j "$(nproc)" -t "xz" "libtool" "2.6.2"
 
-# Let us reduce bloat
-FROM build AS cleanup
-
-RUN rm -rf /tmp/*
-
-FROM cleanup AS test
+FROM build AS test
 
 COPY --chmod=0644 test.cpp .
 COPY --chmod=0655 test.sh .
+
+RUN ./test.sh
+
+# Let us reduce bloat
+FROM test AS cleanup
+
+RUN apk del build_deps
+RUN rm -rf /tmp/*
 
 FROM scratch AS release
 

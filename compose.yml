@@ -1,6 +1,6 @@
 services:
     container:
-        image: "kohirens/alpine-gnu-build-env:dev"
+        image: "kohirens/gnu-build-env:alpine${ALPINE_VER}"
         entrypoint: sh
         build:
             args:

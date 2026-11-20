@@ -11,7 +11,7 @@ docker compose build
 or without Docker Compose installed
 
 ```shell
-docker build -t "kohirens/docker-alpine-gnu-build-env:release" --build-arg "ALPINE_VER=3.17" --target "release" .
+docker build -t "kohirens/gnu-build-env:release" --build-arg "ALPINE_VER=3.17" --target "release" .
 ```
 
 ## Test

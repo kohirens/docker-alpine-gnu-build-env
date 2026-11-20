@@ -30,13 +30,11 @@ RUN apk --no-progress --purge --no-cache upgrade \
     file \
     gawk \
     gcc \
-    git \
     gnupg \
     grep \
     linux-headers \
     make \
     perl \
-    py3-pip \
     python3 \
     texinfo \
  && apk --no-progress --purge --no-cache upgrade \
